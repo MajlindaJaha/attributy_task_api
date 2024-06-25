@@ -7,7 +7,7 @@ import express, { Express, Request, Response } from "express";
 import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 import dotenv from "dotenv";
 import postRoutes from "./routes/post.routes";
-import serverless from "serverless-http";
+
 dotenv.config();
 
 let cachedDbConnection: Mongoose | null = null;
@@ -38,7 +38,7 @@ const createApp = (): Express => {
   app.use(express.json());
   app.use("/api/posts", postRoutes);
 
-  return serverless(app);
+  return app;
 };
 
 let cachedApp: Express | null = null;

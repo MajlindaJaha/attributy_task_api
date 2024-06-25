@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    console.log("rrr");
     const id = uuidv4();
-    const post = await Post.create({ ...req.body, _id: id, postId: id });
+    const dataParse = JSON.parse(req.body);
+    const data1 = { ...dataParse, _id: id, postId: id };
+    const post = await Post.create(data1);
     const data = CreatePostDto.createDtoFromEntity(post);
     res.status(200).json(data);
   } catch (err) {
@@ -35,7 +36,10 @@ export const getPosts = async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const posts = await Post.find({}).skip(skip).limit(limit);
+    const posts = await Post.find({})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
     const count = await Post.countDocuments({});
 
     if (!posts || posts.length === 0) {
@@ -52,7 +56,8 @@ export const getPosts = async (req: Request, res: Response) => {
 export const updatePost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const post = await Post.findByIdAndUpdate(id, req.body);
+    const dataParse = JSON.parse(req.body);
+    const post = await Post.findByIdAndUpdate(id, dataParse);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }

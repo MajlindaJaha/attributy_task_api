@@ -1,16 +1,10 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: gmveliu
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: attributytask
 service: attributy-task-api
 
 provider:
   name: aws
   runtime: nodejs20.x
   region: eu-central-1
-  environment:
-    MONGO_URL: mongodb+srv://majlindajaha:jyNt4YvBIidJGNKs@attributytaskapi.c5qnbg7.mongodb.net/?retryWrites=true&w=majority&appName=AttributyTaskAPI
-    PORT: 3000
+  timeout: 150
 
 functions:
   app:
@@ -19,7 +13,6 @@ functions:
       - http:
           method: ANY
           path: /api/posts
-
       - http:
           method: ANY
           path: /api/posts/{any+}
@@ -30,3 +23,6 @@ plugins:
 custom:
   dotenv:
     basePath: ./
+
+org: null
+app: null
