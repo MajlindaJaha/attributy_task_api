@@ -71,6 +71,11 @@ export const handler = async (
       body: JSON.stringify({
         message: "Internal server error",
       }),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+      },
     };
   }
 };
@@ -94,7 +99,11 @@ const createResponse = (
 ): Response => {
   const res: Partial<Response> = {
     statusCode: 200,
-    headers: {},
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+    },
     status(code: number) {
       this.statusCode = code;
       return this as Response;
@@ -103,6 +112,7 @@ const createResponse = (
       resolve({
         statusCode: this.statusCode || 200,
         body: JSON.stringify(body),
+        headers: this.headers,
       });
       return this as Response;
     },
@@ -110,13 +120,14 @@ const createResponse = (
       this.send(body);
     },
     setHeader(name: string, value: string) {
-      this.headers[name] = value;
+      this.headers![name] = value;
       return this as Response;
     },
-    end() {
+    end(body?: any) {
       resolve({
         statusCode: this.statusCode || 200,
-        body: JSON.stringify(body),
+        body: body ? JSON.stringify(body) : "",
+        headers: this.headers,
       });
     },
     on(event: string, handler: Function) {

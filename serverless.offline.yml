@@ -2,16 +2,14 @@ service: attributy-task-api
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs20.x # Adjust to the Node.js version you are using
   region: eu-central-1
   timeout: 150
   profile: serverless-framework
-  environment:
-    MONGO_URL: ${env:MONGO_URL}
 
 functions:
   app:
-    handler: src/lambda.handler
+    handler: dist/lambda.handler # Ensure this points to your TypeScript file
     events:
       - http:
           method: ANY
@@ -24,7 +22,6 @@ functions:
 
 plugins:
   - serverless-offline
-  - serverless-dotenv-plugin
 
 custom:
   dotenv:
