@@ -7,7 +7,8 @@ import express, { Express, Request, Response } from "express";
 import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 import dotenv from "dotenv";
 import postRoutes from "./routes/post.routes";
-
+import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes";
 dotenv.config();
 
 let cachedDbConnection: Mongoose | null = null;
@@ -25,6 +26,7 @@ const connectToDatabase = async (): Promise<Mongoose> => {
     const db = await mongoose.connect(process.env.MONGO_URL as string, options);
     cachedDbConnection = db;
     console.log("Successfully connected to MongoDB:", db.connection.name);
+
     return db;
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
@@ -37,7 +39,8 @@ const createApp = (): Express => {
 
   app.use(express.json());
   app.use("/api/posts", postRoutes);
-
+  app.use("/api/users", userRoutes);
+  app.use("/api/auth", authRoutes);
   return app;
 };
 
@@ -56,7 +59,6 @@ export const handler = async (
     }
 
     const app = cachedApp;
-
     return new Promise((resolve, reject) => {
       const req = createRequest(event);
       const res = createResponse(resolve);

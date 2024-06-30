@@ -5,10 +5,11 @@ export class CreatePostDto {
   @Length(1, 200)
   title: string;
 
-  @IsOptional()
+  @Length(1, 200)
   @IsString()
-  content?: string;
+  content: string;
 
+  @IsOptional()
   postId?: string;
 
   static createDtoFromEntity(entity: any) {
