@@ -8,6 +8,7 @@ provider:
   profile: serverless-framework
   environment:
     MONGO_URL: ${env:MONGO_URL}
+    JWT_SECRET: ${env:JWT_SECRET}
 
 functions:
   app:
@@ -20,6 +21,22 @@ functions:
       - http:
           method: ANY
           path: /api/posts/{any+}
+          cors: true
+      - http:
+          method: ANY
+          path: /api/users
+          cors: true
+      - http:
+          method: ANY
+          path: /api/users/{any+}
+          cors: true
+      - http:
+          method: ANY
+          path: /api/auth
+          cors: true
+      - http:
+          method: ANY
+          path: /api/auth/{any+}
           cors: true
 
 plugins:

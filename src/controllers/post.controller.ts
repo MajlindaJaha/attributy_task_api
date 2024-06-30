@@ -2,11 +2,21 @@ import { Request, Response } from "express";
 import Post from "../models/post.model";
 import { CreatePostDto } from "../dto/create-post.dto";
 import { v4 as uuidv4 } from "uuid";
+import { validate } from "class-validator";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
     const id = uuidv4();
     const dataParse = JSON.parse(req.body);
+    const createPostDto = new CreatePostDto();
+
+    Object.assign(createPostDto, dataParse);
+    const errors = await validate(createPostDto);
+
+    if (errors.length > 0) {
+      const error = errors[0].constraints;
+      return res.status(400).json({ error });
+    }
     const data1 = { ...dataParse, _id: id, postId: id };
     const post = await Post.create(data1);
     const data = CreatePostDto.createDtoFromEntity(post);
@@ -57,6 +67,15 @@ export const updatePost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const dataParse = JSON.parse(req.body);
+    const createPostDto = new CreatePostDto();
+
+    Object.assign(createPostDto, dataParse);
+    const errors = await validate(createPostDto);
+
+    if (errors.length > 0) {
+      const error = errors[0].constraints;
+      return res.status(400).json({ error });
+    }
     const post = await Post.findByIdAndUpdate(id, dataParse);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
